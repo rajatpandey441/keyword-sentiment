@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/keyword-sentiment/static/css/main.f09a89ab.css",
+    "main.js": "/keyword-sentiment/static/js/main.38076c89.js",
+    "static/js/787.e8a82d7a.chunk.js": "/keyword-sentiment/static/js/787.e8a82d7a.chunk.js",
+    "static/media/light-bulb.svg": "/keyword-sentiment/static/media/light-bulb.0b00cb2a76920bc7e4f38f9898bdf043.svg",
+    "index.html": "/keyword-sentiment/index.html",
+    "main.f09a89ab.css.map": "/keyword-sentiment/static/css/main.f09a89ab.css.map",
+    "main.38076c89.js.map": "/keyword-sentiment/static/js/main.38076c89.js.map",
+    "787.e8a82d7a.chunk.js.map": "/keyword-sentiment/static/js/787.e8a82d7a.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f09a89ab.css",
+    "static/js/main.38076c89.js"
+  ]
+}
