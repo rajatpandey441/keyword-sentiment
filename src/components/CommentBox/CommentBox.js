@@ -43,19 +43,23 @@ const CommentBox = (props) => {
     if (isValidHttpUrl(commentText) && isYoutubeUrl(commentText)) {
       isYoutube = true;
       const videoId = getYouTubeVideoId(commentText);
-      const url = `https://www.googleapis.com/youtube/v3/commentThreads?key=${process.env.REACT_APP_YOUTUBE_API_KEY}&textFormat=plainText&part=snippet&videoId=${videoId}`;
-      fetch(url)
-        .then((response) => response.json())
+      fetch("/.netlify/functions/Youtubekey")
+        .then((res) => res.json())
         .then((data) => {
-          console.log(data);
+          const url = `https://www.googleapis.com/youtube/v3/commentThreads?key=${data.title}&textFormat=plainText&part=snippet&videoId=${videoId}`;
+          fetch(url)
+            .then((response) => response.json())
+            .then((data) => {
+              console.log(data);
 
-          let extractedComments = "";
-          for (let item of data.items) {
-            extractedComments +=
-              item.snippet.topLevelComment.snippet.textDisplay + "\n";
-          }
-          console.log("extractedComments -- " + extractedComments);
-          extractKeywords(extractedComments);
+              let extractedComments = "";
+              for (let item of data.items) {
+                extractedComments +=
+                  item.snippet.topLevelComment.snippet.textDisplay + "\n";
+              }
+              console.log("extractedComments -- " + extractedComments);
+              extractKeywords(extractedComments);
+            });
         });
     } else {
       isYoutube = false;
@@ -67,58 +71,63 @@ const CommentBox = (props) => {
   const extractKeywords = async (text) => {
     props.setIsLoading(true);
     props.setIsOpen(true);
-    let prompt =
-      "Extract keywords from following text. Make the first letter of every word uppercase and separate with commas:\n\n" +
-      text;
+    fetch("/.netlify/functions/OpenAIKey")
+      .then((res) => res.json())
+      .then((fnData) => {
+        let prompt =
+          "Extract keywords from following text. Make the first letter of every word uppercase and separate with commas:\n\n" +
+          text;
 
-    if (isYoutube) {
-      prompt =
-        `Build a JSON (format should be { 
-          "positive": 7,
-          "negative": 3,
-          "neutral": 6
-        } only) according to number of Positive, Negative or Neutral sentiment in following comments:\n\n` +
-        text;
-    }
+        if (isYoutube) {
+          prompt =
+            `Build a JSON (format should be { 
+            "positive": 7,
+            "negative": 3,
+            "neutral": 6
+          } only) according to number of Positive, Negative or Neutral sentiment in following comments:\n\n` +
+            text;
+        }
 
-    const options = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.REACT_APP_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: "text-davinci-003",
-        prompt: prompt,
-        temperature: 0.5,
-        max_tokens: 60,
-        top_p: 1.0,
-        frequency_penalty: 0.8,
-        presence_penalty: 0.0,
-      }),
-    };
+        const options = {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${fnData.key}`,
+          },
+          body: JSON.stringify({
+            model: "text-davinci-003",
+            prompt: prompt,
+            temperature: 0.5,
+            max_tokens: 60,
+            top_p: 1.0,
+            frequency_penalty: 0.8,
+            presence_penalty: 0.0,
+          }),
+        };
 
-    try {
-      console.log(process.env.REACT_APP_API_URL);
-      const response = await fetch(`${process.env.REACT_APP_API_URL}`, options);
-      const json = await response.json();
-      console.log(json.choices[0].text.trim());
-      if (isYoutube) {
-        //console.log(json.choices[0].text.trim());
-        const parsedSentiment = JSON.parse(json.choices[0].text.trim());
-        props.setSentimentData(parsedSentiment);
-        props.setIsYoutube(true);
-        console.log(parsedSentiment);
-      } else {
-        props.setKeywords(
-          json.choices[0].text.trim(json.choices[0].text.trim())
-        );
-        props.setIsYoutube(false);
-      }
-      props.setIsLoading(false);
-    } catch (error) {
-      console.error(error);
-    }
+        try {
+          console.log(fnData.url);
+          fetch(`${fnData.url}`, options).then((response) => {
+            const json = response.json();
+            console.log(json.choices[0].text.trim());
+            if (isYoutube) {
+              //console.log(json.choices[0].text.trim());
+              const parsedSentiment = JSON.parse(json.choices[0].text.trim());
+              props.setSentimentData(parsedSentiment);
+              props.setIsYoutube(true);
+              console.log(parsedSentiment);
+            } else {
+              props.setKeywords(
+                json.choices[0].text.trim(json.choices[0].text.trim())
+              );
+              props.setIsYoutube(false);
+            }
+            props.setIsLoading(false);
+          });
+        } catch (error) {
+          console.error(error);
+        }
+      });
   };
   return (
     <>
