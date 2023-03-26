@@ -1,4 +1,5 @@
 {
+  "homepage": "http://rajatpandey441.github.io/keyword-sentiment",
   "name": "keyword-extractor",
   "version": "0.1.0",
   "private": true,
@@ -13,12 +14,15 @@
     "framer-motion": "^10.8.5",
     "react": "^18.2.0",
     "react-bootstrap": "^2.7.2",
+    "axios": "^0.21.1",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
     "victory-pie": "^36.6.8",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -41,5 +45,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "gh-pages": "^5.0.0",
+    "netlify-cli": "^3.38.10"
   }
 }
