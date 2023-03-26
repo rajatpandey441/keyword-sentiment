@@ -4,9 +4,7 @@ exports.handler = async function (event, context) {
   console.log(event);
   console.log(context);
   try {
-    const response = await axios.get(
-      `${process.env.REACT_APP_YOUTUBE_API_KEY}`
-    );
+    const response = await axios.get(`${process.env.YOUTUBE_API_KEY}`);
     return {
       statusCode: 200,
       body: JSON.stringify({ title: response.data.title }),
