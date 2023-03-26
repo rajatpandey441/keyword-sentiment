@@ -7,20 +7,6 @@ const CommentBox = (props) => {
   const [commentText, setCommentText] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(true);
   const toast = useToast();
-  function extractKeyword() {
-    setIsSubmitting(false);
-    if (!commentText) {
-      toast({
-        title: "Text field is empty.",
-        description: "Please enter some text to extract keywords.",
-        status: "error",
-        duration: 5000,
-        isClosable: false,
-      });
-      return;
-    }
-    extractKeywords(commentText);
-  }
   function isValidHttpUrl(string) {
     let url;
     try {
@@ -39,7 +25,7 @@ const CommentBox = (props) => {
     var regExp =
       /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
     var match = url.match(regExp);
-    return match && match[7].length == 11 ? match[7] : false;
+    return match && match[7].length === 11 ? match[7] : false;
   }
   function handleOnSubmit() {
     if (!commentText) {
