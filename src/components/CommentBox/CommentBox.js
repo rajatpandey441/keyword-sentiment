@@ -28,6 +28,7 @@ const CommentBox = (props) => {
     return match && match[7].length === 11 ? match[7] : false;
   }
   function handleOnSubmit() {
+    setIsSubmitting(false);
     if (!commentText) {
       toast({
         title: "Text field is empty.",
@@ -60,6 +61,7 @@ const CommentBox = (props) => {
       isYoutube = false;
       extractKeywords(commentText);
     }
+    setIsSubmitting(true);
   }
 
   const extractKeywords = async (text) => {
