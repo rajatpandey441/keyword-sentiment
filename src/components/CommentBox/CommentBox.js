@@ -107,23 +107,25 @@ const CommentBox = (props) => {
 
         try {
           console.log(fnData.url);
-          fetch(`${fnData.url}`, options).then((response) => {
-            const json = response.json();
-            console.log(json.choices[0].text.trim());
-            if (isYoutube) {
-              //console.log(json.choices[0].text.trim());
-              const parsedSentiment = JSON.parse(json.choices[0].text.trim());
-              props.setSentimentData(parsedSentiment);
-              props.setIsYoutube(true);
-              console.log(parsedSentiment);
-            } else {
-              props.setKeywords(
-                json.choices[0].text.trim(json.choices[0].text.trim())
-              );
-              props.setIsYoutube(false);
-            }
-            props.setIsLoading(false);
-          });
+          fetch(`${fnData.url}`, options)
+            .then((response) => response.json())
+            .then((data) => {
+              const json = data;
+              console.log(json.choices[0].text.trim());
+              if (isYoutube) {
+                //console.log(json.choices[0].text.trim());
+                const parsedSentiment = JSON.parse(json.choices[0].text.trim());
+                props.setSentimentData(parsedSentiment);
+                props.setIsYoutube(true);
+                console.log(parsedSentiment);
+              } else {
+                props.setKeywords(
+                  json.choices[0].text.trim(json.choices[0].text.trim())
+                );
+                props.setIsYoutube(false);
+              }
+              props.setIsLoading(false);
+            });
         } catch (error) {
           console.error(error);
         }
