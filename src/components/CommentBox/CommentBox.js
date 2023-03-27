@@ -43,7 +43,7 @@ const CommentBox = (props) => {
     if (isValidHttpUrl(commentText) && isYoutubeUrl(commentText)) {
       isYoutube = true;
       const videoId = getYouTubeVideoId(commentText);
-      fetch("/.netlify/functions/Youtubekey")
+      fetch("/.netlify/functions/YoutubeKey")
         .then((res) => res.json())
         .then((data) => {
           const url = `https://www.googleapis.com/youtube/v3/commentThreads?key=${data.title}&textFormat=plainText&part=snippet&videoId=${videoId}`;
